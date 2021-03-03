@@ -6,6 +6,7 @@ import SurveysRepository from '../repositories/SurveysRepository';
 import SurveysUserRepository from '../repositories/SurveysUserRepository';
 import UsersRepository from '../repositories/UsersRepository';
 import SendMailService from '../services/SendMailService';
+import AppError from '../errors/AppErrors';
 class SendMailController {
   async execute(request: Request, response: Response) {
     const { email, survey_id } = request.body;
@@ -41,15 +42,11 @@ class SendMailController {
     }
 
     if (!user) {
-      return response.status(400).json({
-        error: 'User does not exists.',
-      });
+      throw new AppError('User does not exists.');
     }
 
     if (!survey) {
-      return response.status(400).json({
-        error: 'Survey does not exists.',
-      });
+      throw new AppError('Survey does not exists.');
     }
 
     const surveyUser = surveysUserRepository.create({
